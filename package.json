@@ -1,6 +1,6 @@
 {
   "name": "zanner-manager-alias",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "alias manager",
   "main": "index.js",
   "directories": {
@@ -18,5 +18,13 @@
   "devDependencies": {},
   "keywords": [
     "alias"
-  ]
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sergej-kucharev/zanner-manager-alias.git"
+  },
+  "bugs": {
+    "url": "https://github.com/sergej-kucharev/zanner-manager-alias/issues"
+  },
+  "homepage": "https://github.com/sergej-kucharev/zanner-manager-alias#readme"
 }
