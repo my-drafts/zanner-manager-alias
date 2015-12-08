@@ -1,0 +1,22 @@
+{
+  "name": "zanner-manager-alias",
+  "version": "1.0.0",
+  "description": "alias manager",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Sergey Kukharev",
+  "license": "ISC",
+  "dependencies": {
+    "zanner-logger": "^1.0.2",
+    "zanner-typeof": "^1.0.1"
+  },
+  "devDependencies": {},
+  "keywords": [
+    "alias"
+  ]
+}
