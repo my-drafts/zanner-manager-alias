@@ -1,108 +1,107 @@
 
-var of = require('zanner-typeof').typeOf;
+var of = require('zanner-typeof').of;
 var logger = require('zanner-logger')('aliasManager');
 
 var aliasManager = module.exports = function(_log){
 	var self = this;
 	var items = self._items = [];
+
 	var log = function(){
-		(_log ? _log : logger).log.apply(self, arguments);
+		(_log ? _log : logger.log).apply(self, arguments);
 	};
 
 	// check if there is an alias
-	self.is = function(name){
-		var result = aliasExists(items, name);
-		log('debug', 'is("%s") -> %j', name, result);
+	self.is = function(_name){
+		var result = aliasExists(items, _name);
+		log('debug', 'is("%s") -> %j', _name, result);
 		return result;
 	};
 
 	// get alias record (name, run, ...)
-	self.get = function(name){
-		var result = aliasGet(items, name);
-		log('debug', 'get("%s") -> %j', name, result);
+	self.get = function(_name){
+		var result = aliasGet(items, _name);
+		log('debug', 'get("%s") -> %j', _name, result);
 		return result;
 	};
 
 	// get alias record index
-	self.index = function(name){
-		var result = aliasIndex(items, name);
-		log('debug', 'getIndex("%s") -> %j', name, result);
+	self.index = function(_name){
+		var result = aliasIndex(items, _name);
+		log('debug', 'getIndex("%s") -> %j', _name, result);
 		return result;
 	};
 
 	// run alias by name with given arguments
-	self.run = function(name, args){
-		log('debug', 'run("%s") with args: %j', name, args);
-		var result = aliasRun(items, name, args);
-		log('debug', 'run("%s") -> %j', name, result);
+	self.run = function(_name, _arguments){
+		log('debug', 'run("%s", %j)', _name, _arguments);
+		var result = aliasRun(items, _name, _arguments);
+		log('debug', 'run("%s") -> %j', _name, result);
 		return result;
 	};
 
 	// set alias record (name, run, ...)
-	self.set = function(alias){
-		var result = aliasSet(items, alias);
-		if(result==undefined) log('error', 'set(%j)', alias);
-		else if(result===false) log('error', 'set(%j): name/run wrong', alias);
-		else if(result===true) log('debug', 'set(%j) -> %j', alias, result);
-		else log('warning', 'set(%j) -> overload alias', alias);
-		return result;
+	self.set = function(_alias){
+		var result = aliasSet(items, _alias);
+		if(result==undefined) log('error', 'set(%j): not object', _alias);
+		else if(result===false) log('error', 'set(%j): name/run wrong', _alias);
+		else if(result===true) log('debug', 'set(%j) -> done', _alias);
+		else log('warning', 'set(%j) -> overload', _alias);
+		return (result===true) || of(result, 'number');
 	};
 	// unset alias by name
-	self.unset = function(name){
-		if(!aliasUnset(items, name)){
-			log('warning', 'unset("%s"): unknown alias', name);
+	self.unset = function(_name){
+		if(!aliasUnset(items, _name)){
+			log('warning', 'unset("%s"): unknown alias', _name);
 			return false;
 		}
 		else{
-			log('debug', 'unset("%s")', name);
+			log('debug', 'unset("%s")', _name);
 			return true;
 		}
 	};
 };
 
-var aliasExists = function(items, name){
-	return items.some(function(v){
-		return v.name==name;
+var aliasExists = function(_items, _name){
+	return _items.some(function(item){
+		return item.name==_name;
 	});
 };
 
-var aliasGet = function(items, name){
-	return items.find(function(v){
-		return v.name==name;
+var aliasGet = function(_items, _name){
+	return _items.find(function(item){
+		return item.name==_name;
 	});
 };
 
-var aliasIndex = function(items, name){
-	return items.findIndex(function(v){
-		return v.name==name;
+var aliasIndex = function(_items, _name){
+	return _items.findIndex(function(item){
+		return item.name==_name;
 	});
 };
 
-var aliasRun = function(items, name, args){
-	var item = this._get(items, name);
-	return item ? item.run(args) : undefined;
+var aliasRun = function(_items, _name, _arguments){
+	var item = aliasGet(_items, _name);
+	return item ? item.run(_arguments) : undefined;
 };
 
-var aliasSet = function(items, alias){
-	if(!of(alias, 'object')) return undefined;
-	else if(!of(alias.name, 'string') || !of(alias.run, 'function')) return false;
-	else if(this._is(items, alias.name)){
-		var index = this._index(items, alias.name);
-		items[index] = alias;
+var aliasSet = function(_items, _alias){
+	if(!of(_alias, 'object')) return undefined;
+	else if(!of(_alias.name, 'string') || !of(_alias.run, 'function')) return false;
+	else if(aliasExists(_items, _alias.name)){
+		var index = aliasIndex(_items, _alias.name);
+		_items[index] = _alias;
 		return index;
 	}
 	else{
-		items.push(alias);
+		_items.push(_alias);
 		return true;
 	}
 };
 
-var aliasUnset = function(items, name){
-	var index = this._getIndex(items, name);
+var aliasUnset = function(_items, _name){
+	var index = aliasIndex(_items, _name);
 	if(index<0) return false;
-	else{
-		items[index] = undefined;
-		delete items[index];
-		return true;
-	}
+	_items[index] = undefined;
+	delete _items[index];
+	return true;
 };
