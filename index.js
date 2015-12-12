@@ -1,4 +1,5 @@
 
+var pf = require('util').format;
 var of = require('zanner-typeof').of;
 var logger = require('zanner-logger')('aliasManager');
 
@@ -60,6 +61,15 @@ var aliasManager = module.exports = function(_log){
 		}
 	};
 };
+
+aliasManager.prototype.inspect = function(depth){
+	var items = this._items.map(function(item){
+		return item.name;
+	});
+	return pf('aliasManager(%j)', items);
+};
+
+
 
 var aliasExists = function(_items, _name){
 	return _items.some(function(item){

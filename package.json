@@ -1,6 +1,6 @@
 {
   "name": "zanner-manager-alias",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "alias manager",
   "main": "index.js",
   "directories": {
@@ -12,6 +12,7 @@
   "author": "Sergey Kukharev",
   "license": "ISC",
   "dependencies": {
+    "util": "^0.10.3",
     "zanner-logger": "^1.0.4",
     "zanner-typeof": "^1.0.4"
   },
