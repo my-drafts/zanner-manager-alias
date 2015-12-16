@@ -1,7 +1,7 @@
 
 var pf = require('util').format;
 var logger = require('zanner-logger')('aliasManager');
-var alias = require('./alias');
+var _aliasManager = require('./_aliasManager');
 
 var aliasManager = module.exports = function(_log){
 	var self = this;
@@ -14,7 +14,7 @@ var aliasManager = module.exports = function(_log){
 	// check if there is an alias
 	self.is = function(_name){
 		var promise = new Promise(function(resolve, reject){
-			if(alias.exists(items, _name)){
+			if(_aliasManager.exists(items, _name)){
 				log('debug', 'is("%s") -> true', _name);
 				resolve();
 			}
@@ -29,7 +29,7 @@ var aliasManager = module.exports = function(_log){
 	// get alias record (name, run, ...)
 	self.get = function(_name){
 		var promise = new Promise(function(resolve, reject){
-			var item = alias.get(items, _name);
+			var item = _aliasManager.get(items, _name);
 			if(item===undefined){
 				log('debug', 'get("%s") -> catch', _name);
 				reject();
@@ -45,7 +45,7 @@ var aliasManager = module.exports = function(_log){
 	// get alias record index
 	self.index = function(_name){
 		var promise = new Promise(function(resolve, reject){
-			var idx = alias.index(items, _name);
+			var idx = _aliasManager.index(items, _name);
 			if(idx===-1){
 				log('debug', 'getIndex("%s") -> catch', _name);
 				reject();
@@ -62,7 +62,7 @@ var aliasManager = module.exports = function(_log){
 	self.run = function(_name, _arguments){
 		var promise = new Promise(function(resolve, reject){
 			log('debug', 'run("%s", %j)', _name, _arguments);
-			alias.run(items, _name, _arguments)
+			_aliasManager.run(items, _name, _arguments)
 				.then(function(result){
 					log('debug', 'run("%s") -> %j', _name, result);
 					resolve(result);
@@ -78,7 +78,7 @@ var aliasManager = module.exports = function(_log){
 	// set alias record (name, run, ...)
 	self.set = function(_alias){
 		var promise = new Promise(function(resolve, reject){
-			alias.set(items, _alias)
+			_aliasManager.set(items, _alias)
 				.then(function(result){
 					var index = result[0], overload = result[1];
 					overload ? log('warning', 'set(%j) -> overload', _alias) : log('debug', 'set(%j) -> done', _alias);
@@ -95,7 +95,7 @@ var aliasManager = module.exports = function(_log){
 	// unset alias by name
 	self.unset = function(_name){
 		var promise = new Promise(function(resolve, reject){
-			alias.unset(items, _name)
+			_aliasManager.unset(items, _name)
 				.then(function(result){
 					var index = result[0];
 					items = self._items = result[1];
@@ -112,8 +112,7 @@ var aliasManager = module.exports = function(_log){
 };
 
 aliasManager.prototype.inspect = function(depth){
-	var items = this._items;
-	items = items.map(function(item){
+	var items = this._items.map(function(item){
 		return item.name;
 	});
 	return pf('aliasManager(%j)', items);

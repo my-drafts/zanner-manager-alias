@@ -1,6 +1,6 @@
 {
   "name": "zanner-manager-alias",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "alias manager",
   "main": "index.js",
   "directories": {
